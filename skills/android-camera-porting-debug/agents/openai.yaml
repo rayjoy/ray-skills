@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android Camera Porting Debug"
+  short_description: "Android camera bring-up and diagnosis workflow"
+  default_prompt: "Use the Android camera porting and debugging workflow to diagnose the failure layer, choose the next minimal change, verify with evidence, and document progress."
