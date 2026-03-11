@@ -1,5 +1,7 @@
 # Invocation Templates
 
+中文版本见 [invocation-templates.zh-CN.md](./invocation-templates.zh-CN.md).
+
 Use these templates to start a new session with enough context to trigger the correct workflow quickly.
 
 ## General Template
