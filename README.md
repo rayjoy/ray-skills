@@ -29,6 +29,7 @@ ray-skills/
 ## Current Skills
 
 - `android-camera-porting-debug`
+- `multi-agent-light-flow`
 
 ## Skill Design Rules
 

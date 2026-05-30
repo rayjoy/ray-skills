@@ -29,6 +29,7 @@ ray-skills/
 ## 当前已收录的 Skill
 
 - `android-camera-porting-debug`
+- `multi-agent-light-flow`
 
 ## Skill 组织原则
 
