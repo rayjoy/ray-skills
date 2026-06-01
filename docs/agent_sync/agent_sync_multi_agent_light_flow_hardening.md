@@ -225,3 +225,65 @@ Work Report 必须包含：
 - `git status --short --branch --untracked-files=all`
 - 明确说明未修改 forbidden files。
 - 明确说明未 push、未安装到 `/home/ray/.agents/skills/`。
+
+## Round 2 - Work Report
+
+- Author: Work Agent（Claude Code）
+- Time: 2026-06-01
+- Source: Work Agent reading Round 2 handoff
+- Status: pending_review
+
+### Files Changed
+
+- `skills/multi-agent-light-flow/SKILL.md`
+- `skills/multi-agent-light-flow/references/handoff_checklist.md`
+- `skills/multi-agent-light-flow/references/review_report_template.md`
+- `skills/multi-agent-light-flow/references/usage_examples_zh.md`
+
+### Change Summary
+
+- `SKILL.md`：强化 Review 角色只读规则；越权后记录为 `process-contaminated`；新增 Conditional Pass Closure、Non-Self-Invalidating Closeout、Push / Publish Boundary 三个章节；澄清 Main 在 Pass 后不为 closeout 新增提交。
+- `references/handoff_checklist.md`：新增 Allowed Files / Directories、Forbidden Files / Directories、Push / Publish、Reusable Review Agent Preference、Stop-After-Push、Non-Self-Invalidating Evidence 章节；各角色 check 区域同步更新。
+- `references/review_report_template.md`：新增 Worktree Status、HEAD / Tracking Branch / Remote Consistency、Role-Boundary Violation Check、Forbidden File Changes、Self-Invalidating Evidence Risk、Historical Context vs Current Effective Guidance 章节；Conditions 增加 `Type` 字段。
+- `references/usage_examples_zh.md`：原 Work Agent 提示词追加 push policy、不可写固定 SHA、复用 Review Agent；新增"中文实战示例：Main → Work → Review → 停止"、"Push / Publish 边界示例"、"Conditional Pass 关闭示例"、"越权与自失效 closeout 防护示例"。
+
+### Mapping to Design (7 Items)
+
+1. 强化角色锁定 → `SKILL.md` 角色锁定段、`review_report_template.md` 越权检查。
+2. Conditional Pass 关闭指导 → `SKILL.md` 新章节、`review_report_template.md` Conditions 字段。
+3. 非自失效 closeout → `SKILL.md` 新章节、`handoff_checklist.md` 非自失效证据章节、`usage_examples_zh.md` 自失效 closeout 防护示例。
+4. Push / Publish 边界 → `SKILL.md` 新章节、`handoff_checklist.md` Push / Publish 章节、`usage_examples_zh.md` push 边界示例。
+5. 扩展 Handoff Checklist → `handoff_checklist.md` 新增 6 个章节。
+6. 扩展 Review Report Template → `review_report_template.md` 新增 5 个检查章节。
+7. 中文使用示例 → `usage_examples_zh.md` 新增 4 组实战示例。
+
+### Evidence
+
+```text
+$ git diff --stat
+ skills/multi-agent-light-flow/SKILL.md                            |  82 ++++++-
+ skills/multi-agent-light-flow/references/handoff_checklist.md     |  76 +++++-
+ skills/multi-agent-light-flow/references/review_report_template.md|  47 +++-
+ skills/multi-agent-light-flow/references/usage_examples_zh.md     | 221 ++++++++++++++++++-
+ 4 files changed, 407 insertions(+), 19 deletions(-)
+```
+
+```text
+$ git status --short --branch --untracked-files=all
+## main...origin/main [ahead 5]
+ M skills/multi-agent-light-flow/SKILL.md
+ M skills/multi-agent-light-flow/references/handoff_checklist.md
+ M skills/multi-agent-light-flow/references/review_report_template.md
+ M skills/multi-agent-light-flow/references/usage_examples_zh.md
+```
+
+### Forbidden Files Not Touched
+
+- `docs/superpowers/specs/2026-06-01-multi-agent-light-flow-practical-hardening-design.md` 未动
+- `docs/superpowers/specs/2026-06-01-multi-agent-light-flow-practical-hardening-design.zh.md` 未动
+- 其他 skill 未动
+- `/home/ray/.agents/skills/` 未触碰（未安装、未同步）
+
+### Push Status
+
+- 未 push。Work Agent 按 handoff 默认不 push。
