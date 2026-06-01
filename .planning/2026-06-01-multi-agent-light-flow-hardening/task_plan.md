@@ -4,9 +4,9 @@
 
 基于 AndroidProjConfig 长流程中的真实痛点，优化 `multi-agent-light-flow` 技能，让它更稳地支持 Main / Work / Review / User 协作、只读 Review、Conditional pass、push/closeout 和非自失效证据。
 
-## 状态：等待 Work Agent 执行实现
+## 状态：等待 Work Agent push 并安装
 
-当前已完成设计、中文设计、同步文档创建和设计只读审核。最新 handoff 已写入 `docs/agent_sync/agent_sync_multi_agent_light_flow_hardening.md`，Work Agent 可按 Round 2 执行。
+当前已完成设计、实现和只读复审。`Lagrange` 已对实现给出 Pass。User 已批准普通 push 和安装到实际 skill 目录。最新 handoff 已写入 `docs/agent_sync/agent_sync_multi_agent_light_flow_hardening.md` Round 3。
 
 ## 范围
 
@@ -68,16 +68,26 @@
 - 用于记录后续实现进度、发现和验证
 
 ### 阶段 7：Work Agent 实现
-- 状态：待 Work Agent 执行
+- 状态：完成
 - Work Agent 读取同步文档 Round 2
 - 修改批准的 4 个实现文件
 - 可追加同步文档 Work Report
 - 可提交，不得 push
+- 提交：`19a75e5 feat(skills): implement multi-agent-light-flow practical hardening`
 
 ### 阶段 8：Review Agent 只读复审
-- 状态：待 Work Agent 完成后执行
+- 状态：完成
 - 优先复用 `Lagrange`
 - 审核实现是否符合 spec、范围和验收证据
+- Verdict：Pass
+
+### 阶段 9：发布与安装
+- 状态：待 Work Agent 执行
+- User 已批准：
+  - 普通 push `ray-skills/main`
+  - 同步安装到 `/home/ray/.agents/skills/multi-agent-light-flow/`
+- Work Agent 只执行 push/install 并在聊天报告实时命令
+- 不再追加 closeout 文档提交
 
 ## 验收标准
 

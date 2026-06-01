@@ -287,3 +287,112 @@ $ git status --short --branch --untracked-files=all
 ### Push Status
 
 - 未 push。Work Agent 按 handoff 默认不 push。
+
+## Round 2 - Review Report
+
+- Author: Review Agent `Lagrange`（只读，由 Main Agent 转写）
+- Time: 2026-06-01 22:11:10 CST
+- Source: Review Agent response to Main Agent implementation review request
+- Status: closed
+
+### Verdict
+
+Pass
+
+### Evidence Checked
+
+- 当前状态：`git status --short --branch --untracked-files=all` 输出 `## main...origin/main [ahead 6]`，工作区 clean，未 push。
+- 最新提交：`19a75e5 feat(skills): implement multi-agent-light-flow practical hardening`。
+- `git diff --stat a04d051..HEAD`：6 文件，`476 insertions(+), 19 deletions(-)`。
+- 变更文件仅为：
+  - `skills/multi-agent-light-flow/SKILL.md`
+  - `skills/multi-agent-light-flow/references/handoff_checklist.md`
+  - `skills/multi-agent-light-flow/references/review_report_template.md`
+  - `skills/multi-agent-light-flow/references/usage_examples_zh.md`
+  - `docs/agent_sync/agent_sync_multi_agent_light_flow_hardening.md`
+  - `.planning/2026-06-01-multi-agent-light-flow-hardening/progress.md`
+- `git diff --check a04d051..HEAD` 无输出。
+- 未修改 spec、其他 skill、`/home/ray/.agents/skills`。
+- 设计 7 项均已落地。
+- 轻量性保持：未引入重型状态机，未新增状态枚举。
+
+### Findings
+
+无阻塞问题。
+
+非阻塞：
+
+- Work Report 中的 `git status` 是提交前时点，显示 4 个实现文件 modified；当前现场复核已 clean，可接受。
+- `task_plan.md` 阶段 7 仍写待执行，略滞后；不影响实现验收。
+
+### Recommendation
+
+可进入下一步：由 User 决定是否普通 push，以及是否安装/同步到实际 skills 目录。无需 Work 修正。
+
+## Round 3 - Publish And Install Handoff
+
+- Author: Main Agent（Codex）
+- Time: 2026-06-01 22:11:10 CST
+- Source: User approved both push and install
+- Status: approved
+
+### User Approval
+
+User 已批准：
+
+1. 普通 push `ray-skills/main`。
+2. 同步安装到实际 skill 目录。
+
+### Task
+
+Work Agent（Claude Code）请执行发布和安装。
+
+### Allowed Actions
+
+1. 普通 push 当前 `main` 分支到 `origin/main`。
+2. 将源码 skill 同步到实际 skill 目录：
+   - Source: `/home/ray/source/ray-skills/skills/multi-agent-light-flow/`
+   - Target: `/home/ray/.agents/skills/multi-agent-light-flow/`
+3. 只同步该 skill 目录，不触碰其他 skill。
+4. push/install 后只在聊天中报告实时命令结果。
+
+### Forbidden Actions
+
+- 不 force push。
+- 不改写历史。
+- 不删除分支。
+- 不修改源码文件。
+- 不修改 spec。
+- 不修改其他 skill。
+- 不再追加 closeout 文档提交，避免制造新的 HEAD 前进。
+
+### Suggested Commands
+
+可使用等价安全命令。建议：
+
+```bash
+git status --short --branch --untracked-files=all
+git push origin main
+rsync -a /home/ray/source/ray-skills/skills/multi-agent-light-flow/ /home/ray/.agents/skills/multi-agent-light-flow/
+git status --short --branch --untracked-files=all
+git rev-parse HEAD origin/main
+git ls-remote origin refs/heads/main
+diff -ru /home/ray/source/ray-skills/skills/multi-agent-light-flow /home/ray/.agents/skills/multi-agent-light-flow
+```
+
+不要使用 `rsync --delete`，除非 User 另行批准。
+
+### Report Required In Chat
+
+完成后只在聊天里报告：
+
+- push 是否成功。
+- install/sync 是否成功。
+- `git status --short --branch --untracked-files=all`
+- `git rev-parse HEAD origin/main`
+- `git ls-remote origin refs/heads/main`
+- source skill 与 target skill 的 `diff -ru` 是否无输出。
+
+### Closeout
+
+如果上述实时命令全部通过，任务可停止。不要再提交“最终状态记录”文档。
