@@ -21,8 +21,8 @@
   - 后续实现只修改批准范围内文件。
   - 后续实现后由 Review Agent 只读复审。
   - `git status --short --branch --untracked-files=all` clean。
-- Current round: 1
-- Current status: pending_review
+- Current round: 2
+- Current status: approved
 
 ## Round 1 - Main Design Record
 
@@ -84,3 +84,144 @@ Review Agent 请只读审核中文版设计：
 ### Next Step
 
 Main Agent 将请求 Review Agent 审核设计。若 Review Pass，再写 Work Agent handoff。Work Agent 才执行源码修改。
+
+## Round 1 - Review Report
+
+- Author: Review Agent `Lagrange`（只读，由 Main Agent 转写）
+- Time: 2026-06-01 17:31:51 CST
+- Source: Review Agent response to Main Agent request
+- Status: closed
+
+### Verdict
+
+Pass
+
+### Evidence Checked
+
+- `git status --short --branch --untracked-files=all`：`main...origin/main [ahead 3]`，工作区 clean。
+- 中文设计文档覆盖主要痛点：
+  - Review Agent 只读与越权后 `process-contaminated`
+  - Conditional pass owner / evidence / re-review
+  - 固定 SHA 自失效与实时命令 closeout
+  - push / closeout 分离
+  - Review Agent 复用
+- 设计仍保持 light-flow：
+  - 保留 `Confirm -> Execute/Review/Revise loops -> Closeout`
+  - 明确不引入重型状态机
+  - 不新增状态枚举
+- 后续实现范围聚焦 4 个文件。
+
+### Findings
+
+无阻塞问题。
+
+非阻塞建议：
+
+- Work Agent handoff 应明确“实现阶段只改 4 个批准文件”。
+- 不继续改设计文档或同步文档，除非 Main/User 另行批准。
+
+### Recommendation
+
+可以写 Work Agent handoff。实现后复用 `Lagrange` 做只读复审。
+
+## Round 2 - Work Agent Handoff
+
+- Author: Main Agent（Codex）
+- Time: 2026-06-01 17:31:51 CST
+- Source: User confirmed implementation package
+- Status: approved
+
+### Task
+
+Work Agent（Claude Code）请按已通过 review 的中文版设计实现 `multi-agent-light-flow` 实战加固。
+
+主要依据：
+
+- `docs/superpowers/specs/2026-06-01-multi-agent-light-flow-practical-hardening-design.zh.md`
+- `docs/superpowers/specs/2026-06-01-multi-agent-light-flow-practical-hardening-design.md`
+
+### Allowed Files
+
+只允许修改以下 4 个实现文件：
+
+1. `skills/multi-agent-light-flow/SKILL.md`
+2. `skills/multi-agent-light-flow/references/handoff_checklist.md`
+3. `skills/multi-agent-light-flow/references/review_report_template.md`
+4. `skills/multi-agent-light-flow/references/usage_examples_zh.md`
+
+另外允许追加本同步文档中的 Work Report：
+
+5. `docs/agent_sync/agent_sync_multi_agent_light_flow_hardening.md`
+
+### Forbidden Files / Actions
+
+- 不修改其他 skill。
+- 不修改设计文档：
+  - `docs/superpowers/specs/2026-06-01-multi-agent-light-flow-practical-hardening-design.md`
+  - `docs/superpowers/specs/2026-06-01-multi-agent-light-flow-practical-hardening-design.zh.md`
+- 不修改无关文档。
+- 不安装或同步到 `/home/ray/.agents/skills/`。
+- 不 push。
+- 不改写历史。
+- 不把 light-flow 改成复杂状态机。
+
+### Implementation Requirements
+
+必须实现：
+
+1. 强化 Review Agent 只读规则：
+   - 不得改文件。
+   - 不得提交。
+   - 不得 push。
+   - 越权写操作标记为 `process-contaminated`，等待 Main/User 决策。
+2. 增加 Conditional pass 关闭指导：
+   - owner
+   - required evidence
+   - re-review required
+   - Work 只关闭指定条件项。
+3. 增加非自失效 closeout 规则：
+   - 避免用固定 HEAD SHA 作为最终唯一证据。
+   - 推荐实时命令验证。
+   - live check 已 Pass 且只剩“记录 Pass”时默认停止。
+4. 澄清 push / publish 边界：
+   - push 是否允许。
+   - push 类型。
+   - push 后是“只报告实时命令”还是“允许追加同步记录”。
+5. 扩展 handoff checklist：
+   - allowed files
+   - forbidden files
+   - push allowed
+   - reusable review agent preference
+   - stop-after-push
+   - non-self-invalidating evidence
+6. 扩展 review report template：
+   - worktree status
+   - HEAD / origin / ls-remote
+   - role-boundary violation
+   - forbidden file changes
+   - self-invalidating evidence risk
+   - historical context vs current effective guidance
+7. 在 `usage_examples_zh.md` 增加中文实战示例：
+   - Main 写 handoff
+   - Work 执行并在允许时普通 push
+   - Review 只读 live check
+   - Main 在 Pass 后停止，不再提交会推动 HEAD 的 closeout 记录
+
+### Commit / Push Policy
+
+- Work Agent 可以 commit。
+- Work Agent 不得 push。
+- commit 后追加 Work Report 到本同步文档，或将 Work Report 包含在同一个提交中。
+- 完成后等待 Main Agent 安排 `Lagrange` 只读复审。
+
+### Acceptance Evidence
+
+Work Report 必须包含：
+
+- 修改文件列表。
+- 每个文件的改动摘要。
+- 如何对应设计文档的 7 项 proposed changes。
+- `git diff --stat`
+- `git status --short --branch --untracked-files=all`
+- 明确说明未修改 forbidden files。
+- 明确说明未 push、未安装到 `/home/ray/.agents/skills/`。
