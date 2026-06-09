@@ -4,9 +4,9 @@
 
 基于 AndroidProjConfig 长流程中的真实痛点，优化 `multi-agent-light-flow` 技能，让它更稳地支持 Main / Work / Review / User 协作、只读 Review、Conditional pass、push/closeout 和非自失效证据。
 
-## 状态：等待 Work Agent push 并安装
+## 状态：阶段 9 待执行 + 第二轮优化头脑风暴未完成
 
-当前已完成设计、实现和只读复审。`Lagrange` 已对实现给出 Pass。User 已批准普通 push 和安装到实际 skill 目录。最新 handoff 已写入 `docs/agent_sync/agent_sync_multi_agent_light_flow_hardening.md` Round 3。
+已完成设计、实现和只读复审（阶段 1-8）。阶段 9（push+install）待 User 决定执行时机。6/08 启动第二轮优化头脑风暴，讨论了三个优化点但未结束，User 表示"还有其他问题"待继续。
 
 ## 范围
 
@@ -63,7 +63,7 @@
 - 内容：实现范围、禁止动作、验收证据、commit/push policy
 
 ### 阶段 6：创建 planning 文件
-- 状态：进行中
+- 状态：完成
 - 本阶段创建 `.planning/2026-06-01-multi-agent-light-flow-hardening/`
 - 用于记录后续实现进度、发现和验证
 
@@ -82,12 +82,23 @@
 - Verdict：Pass
 
 ### 阶段 9：发布与安装
-- 状态：待 Work Agent 执行
+- 状态：待执行
 - User 已批准：
   - 普通 push `ray-skills/main`
   - 同步安装到 `/home/ray/.agents/skills/multi-agent-light-flow/`
 - Work Agent 只执行 push/install 并在聊天报告实时命令
 - 不再追加 closeout 文档提交
+- 执行时机待 User 决定
+
+### 阶段 10：第二轮优化（头脑风暴阶段）
+- 状态：进行中
+- 6/08 讨论三个优化点，User 表示还有其他问题未结束
+- 已讨论：
+  1. 同步文档位置 `docs/agent_sync/` → `.agent_sync/`
+  2. 删除 SKILL.md 硬编码中文文档名（旧项目遗留）
+  3. 角色合并规则（Main+Work 可合并→Operative，Review 必须独立）
+- 待继续收集优化点后再出设计方案
+- 与阶段 9 的执行顺序待 User 决定
 
 ## 验收标准
 

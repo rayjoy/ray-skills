@@ -39,3 +39,23 @@
 - 不新增状态枚举。
 - 重点改规则和模板，不追求格式重构。
 - 中文示例应短、实用，可直接复制改写。
+
+## 第二轮优化发现（2026-06-08）
+
+### 同步文档位置不合理
+
+- `docs/agent_sync/` 污染 docs 结构，改为 `.agent_sync/`（隐藏目录）
+- 影响文件：SKILL.md、agent_sync_template.md、handoff_checklist.md、usage_examples*.md
+
+### Project Override 硬编码旧项目文件名
+
+- SKILL.md 第46-48行硬编码三个中文文档名，来自旧项目，不应出现在通用 skill
+- 应删除这三个具体文件名，保留通用的 AGENTS.md / CLAUDE.md 等查找逻辑
+
+### 角色合并规则
+
+- 核心原则：建设性角色（Main+Work）可合并为 Operative，批判性角色（Review）必须独立
+- 不能合并 Main+Review：Main 是推动者（建设性思维），Review 是把关者（批判性思维），合并产生确认偏误
+- 合并前提：同一 agent session（无隔离边界）
+- 跨 session 时角色保持独立
+- Review 独立性保障：prompt 约束 + 只读规则（同 session），或完全独立 session（跨 session）
