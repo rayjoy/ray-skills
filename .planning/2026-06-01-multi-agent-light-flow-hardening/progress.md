@@ -77,3 +77,23 @@
 - 用户说"还有其他问题"，头脑风暴未结束
 - 需继续收集优化点后再出设计方案
 - Phase 9 和新优化的执行顺序待用户决定
+
+## 2026-06-16
+
+### 用户改道：从仓库级 Copilot 入口改为用户级全局安装
+- User 明确新需求：不是让当前仓库提供 workspace 级 Copilot 支持，而是让别的工程中的 VS Code Copilot 也能使用 `multi-agent-light-flow`。
+- 结论：`.github/skills/` 只在当前仓库生效；跨工程全局可用必须安装到 `/home/ray/.copilot/skills/multi-agent-light-flow/`。
+
+### 已执行
+- 撤回仓库级尝试：
+  - 删除 `.github/skills/multi-agent-light-flow/SKILL.md`
+  - 删除 `.github/prompts/multi-agent-light-flow.prompt.md`
+  - 恢复 `README.md`
+  - 恢复 `README.zh-CN.md`
+- 使用 `rsync -a --delete` 将 canonical source 从 `skills/multi-agent-light-flow/` 同步到 `/home/ray/.copilot/skills/multi-agent-light-flow/`
+- 运行 `python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py /home/ray/.copilot/skills/multi-agent-light-flow`，结果通过
+
+### 当前仓库状态
+- 与本轮目标相关的仓库级 Copilot 改动已全部撤回
+- 当前仓库只剩 planning 文档待提交
+- `CLAUDE.md` 仍是未跟踪文件，非本任务产物，不纳入本次提交

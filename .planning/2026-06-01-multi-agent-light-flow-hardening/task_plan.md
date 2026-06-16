@@ -4,9 +4,9 @@
 
 基于 AndroidProjConfig 长流程中的真实痛点，优化 `multi-agent-light-flow` 技能，让它更稳地支持 Main / Work / Review / User 协作、只读 Review、Conditional pass、push/closeout 和非自失效证据。
 
-## 状态：阶段 9 待执行 + 第二轮优化头脑风暴未完成
+## 状态：阶段 9 已按新要求完成 + 第二轮优化头脑风暴未完成
 
-已完成设计、实现和只读复审（阶段 1-8）。阶段 9（push+install）待 User 决定执行时机。6/08 启动第二轮优化头脑风暴，讨论了三个优化点但未结束，User 表示"还有其他问题"待继续。
+已完成设计、实现和只读复审（阶段 1-8）。2026-06-16 User 变更原阶段 9 要求：不再做仓库级 `.github` Copilot 入口，也不执行原计划中的 push + `~/.agents/skills/` 安装；改为撤回仓库级改动，并把 canonical skill 安装到用户级全局目录 `~/.copilot/skills/multi-agent-light-flow/`。6/08 启动的第二轮优化头脑风暴仍未结束。
 
 ## 范围
 
@@ -82,13 +82,15 @@
 - Verdict：Pass
 
 ### 阶段 9：发布与安装
-- 状态：待执行
-- User 已批准：
-  - 普通 push `ray-skills/main`
-  - 同步安装到 `/home/ray/.agents/skills/multi-agent-light-flow/`
-- Work Agent 只执行 push/install 并在聊天报告实时命令
-- 不再追加 closeout 文档提交
-- 执行时机待 User 决定
+- 状态：完成（按 2026-06-16 新要求改道）
+- 原计划已废止：
+  - 不再普通 push `ray-skills/main`
+  - 不再安装到 `/home/ray/.agents/skills/multi-agent-light-flow/`
+- 实际执行：
+  - 撤回仓库级 Copilot 入口尝试：删除 `.github/skills/multi-agent-light-flow/`、`.github/prompts/multi-agent-light-flow.prompt.md`，恢复 `README.md`、`README.zh-CN.md`
+  - 将 canonical skill 安装到用户级全局目录：`/home/ray/.copilot/skills/multi-agent-light-flow/`
+  - 使用 `quick_validate.py` 校验全局安装结果通过
+- 本阶段不产生源码功能改动，不 push，只更新 planning 文档并提交到 git
 
 ### 阶段 10：第二轮优化（头脑风暴阶段）
 - 状态：进行中
@@ -108,13 +110,15 @@
 - Review 模板能检查角色越权和自失效 closeout。
 - 中文示例覆盖 Main / Work / Review / User 实战模式。
 - Work Agent 未 push，未安装到 `/home/ray/.agents/skills/`。
+- 用户级全局 Copilot skill 已安装到 `/home/ray/.copilot/skills/multi-agent-light-flow/`。
+- 仓库不保留 workspace 级 `.github` Copilot shim。
 - Review Agent 最终 Pass。
 
 ## 错误记录
 
 | 错误 | 状态 | 处理 |
 |---|---|---|
-| 暂无 | - | - |
+| `quick_validate.py` 不接受 Copilot skill frontmatter 字段 `argument-hint` | 已解决 | 仓库级 shim 试验阶段删除该字段；最终方案改为用户级全局安装，不再依赖仓库 shim |
 
 ## 关键决策
 
@@ -122,3 +126,4 @@
 - 不新增状态枚举；`process-contaminated` 等用正文描述。
 - 同步文档继续 append-only。
 - 旧错误表述用追加当前有效口径修正，不重写历史。
+- 若目标是“别的工程也能用”，Copilot skill 应安装到 `~/.copilot/skills/<name>/`，而不是当前仓库 `.github/skills/`。

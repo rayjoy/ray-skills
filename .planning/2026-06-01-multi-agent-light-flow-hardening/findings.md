@@ -59,3 +59,21 @@
 - 合并前提：同一 agent session（无隔离边界）
 - 跨 session 时角色保持独立
 - Review 独立性保障：prompt 约束 + 只读规则（同 session），或完全独立 session（跨 session）
+
+## 2026-06-16 新发现：Copilot skill 作用域
+
+### 仓库级 `.github/skills/` 不是全局方案
+
+- `.github/skills/<name>/` 只对当前打开的仓库生效
+- 适合项目级共享，不适合“别的工程也能用”的需求
+
+### 用户级全局方案
+
+- 若目标是跨工程可用，应该安装到 `~/.copilot/skills/<name>/`
+- 本任务最终安装路径：`/home/ray/.copilot/skills/multi-agent-light-flow/`
+- 这样在别的工程里打开 VS Code，Copilot 也能发现该 skill
+
+### 兼容性发现
+
+- 本仓库现有 `quick_validate.py` 不接受 Copilot skill frontmatter 可选字段 `argument-hint`
+- 如果未来还要在仓库里做 Copilot shim，需避免依赖该字段，或接受 validator 与 Copilot 支持范围不完全一致
