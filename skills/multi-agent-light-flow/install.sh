@@ -53,7 +53,12 @@ if [ ! -f "$CODEX_AGENTS" ]; then
   log "created $CODEX_AGENTS"
 elif grep -qF "$BEGIN_MARKER" "$CODEX_AGENTS"; then
   sed -i -e "/$BEGIN_MARKER/,/$END_MARKER/d" "$CODEX_AGENTS"
-  printf '\n%s\n' "$POINTER_BODY" >> "$CODEX_AGENTS"
+  sed -i -e :a -e '/^\s*$/{$d;N;ba' -e '}' "$CODEX_AGENTS"
+  if [ -s "$CODEX_AGENTS" ]; then
+    printf '\n%s\n' "$POINTER_BODY" >> "$CODEX_AGENTS"
+  else
+    printf '%s\n' "$POINTER_BODY" > "$CODEX_AGENTS"
+  fi
   log "updated pointer block in $CODEX_AGENTS"
 else
   printf '\n%s\n' "$POINTER_BODY" >> "$CODEX_AGENTS"
