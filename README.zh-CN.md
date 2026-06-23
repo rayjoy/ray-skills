@@ -63,6 +63,16 @@ python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py \
 5. 在功能分支上提交。
 6. 验证无误后 push 并合并。
 
+## 安装（Claude Code + Codex）
+
+将某个 skill 以用户级全局方式安装，使 Claude Code 和 Codex 都能使用，仓库为唯一源：
+
+```bash
+bash skills/multi-agent-light-flow/install.sh
+```
+
+该脚本为 Claude Code 建立软链（`~/.agents/skills` + `~/.claude/skills`），并为 Codex 在 `~/.codex/AGENTS.md` 写入指针块。在本仓库内编辑 skill，两个工具即时生效。脚本幂等，可重复运行。
+
 ## 备注
 
 - 这个仓库保存的是 skill 源码，不是完整的本地 Codex 运行环境。

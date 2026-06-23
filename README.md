@@ -63,6 +63,19 @@ python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py \
 5. Commit on a feature branch.
 6. Push and merge after verification.
 
+## Install (Claude Code + Codex)
+
+Install a skill user-globally so Claude Code and Codex can use it, with this
+repository as the single source of truth:
+
+```bash
+bash skills/multi-agent-light-flow/install.sh
+```
+
+This wires Claude Code via a symlink (`~/.agents/skills` + `~/.claude/skills`)
+and Codex via a pointer block in `~/.codex/AGENTS.md`. Edit the skill in this
+repo; both tools see the change live. The script is idempotent.
+
 ## Notes
 
 - This repository stores skill source files, not the entire local Codex runtime.
